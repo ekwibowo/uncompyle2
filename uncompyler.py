@@ -188,8 +188,3 @@ def decompile(*files, **opts):
 
     if timestamp:
         print time.strftime( timestampfmt )
-
-if __name__ == '__main__':
-    decompile( '/Users/erikwibowo/anaconda/lib/python2.7/collections.pyc',
-               '/Users/erikwibowo/anaconda/lib/python2.7/struct.pyc',
-               _o='/Users/erikwibowo/Desktop' )
