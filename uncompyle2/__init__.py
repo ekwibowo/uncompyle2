@@ -142,8 +142,8 @@ else:
     def __memUsage():
         return ''
 
-def main(in_base, out_base, files, codes, outfile=None,
-         showasm=0, showast=0, do_verify=0, py=0, deob=0):
+def main_i(in_base, out_base, files, codes, outfile=None,
+           showasm=0, showast=0, do_verify=0, py=0, deob=0):
     """
     in_base	base directory for input files
     out_base	base directory for output files (ignored when
@@ -156,11 +156,12 @@ def main(in_base, out_base, files, codes, outfile=None,
     - stdout			out_base=None, outfile=None
     """
     def _get_outstream(outfile):
-        dir = os.path.dirname(outfile)
+        directory = os.path.dirname(outfile)
         failed_file = outfile + '_failed'
-        if os.path.exists(failed_file): os.remove(failed_file)
+        if os.path.exists(failed_file):
+            os.remove(failed_file)
         try:
-            os.makedirs(dir)
+            os.makedirs(directory)
         except OSError:
             pass
         return open(outfile, 'w')
@@ -179,12 +180,13 @@ def main(in_base, out_base, files, codes, outfile=None,
         infile = os.path.join(in_base, file)
         #print >>sys.stderr, infile
 
-        if of: # outfile was given as parameter
+        if of:  # outfile was given as parameter
             outstream = _get_outstream(outfile)
         elif out_base is None:
             outstream = sys.stdout
         else:
-            outfile = os.path.join(out_base, file)
+            filename = file.split(os.sep)[-1]
+            outfile = os.path.join(out_base, filename)
             if py:
                 outfile = outfile[:-1]
             else:
@@ -192,7 +194,7 @@ def main(in_base, out_base, files, codes, outfile=None,
             outstream = _get_outstream(outfile)
         #print >>sys.stderr, outfile 
 
-        # try to decomyple the input file
+        # try to decompyle the input file
         try:
             uncompyle_file(infile, outstream, showasm, showast, deob)
             tot_files += 1
@@ -210,7 +212,7 @@ def main(in_base, out_base, files, codes, outfile=None,
             import traceback
             traceback.print_exc()
             #raise
-	else: # uncompyle successfull
+        else:  # uncompyle successfull
             if outfile:
                 outstream.close()
             if do_verify:
@@ -226,4 +228,4 @@ def main(in_base, out_base, files, codes, outfile=None,
             else:
                 okay_files += 1
                 print "+++ okay decompyling", infile, __memUsage()
-    return (tot_files, okay_files, failed_files, verify_failed_files)
+    return tot_files, okay_files, failed_files, verify_failed_files
